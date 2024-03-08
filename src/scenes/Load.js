@@ -17,6 +17,16 @@ class Load extends Phaser.Scene {
         this.load.image('RIGHT', 'RIGHT.png')
         this.load.image('fly', 'fly.png')
 
+        this.load.spritesheet('P1Health', 'P1Health.png', {
+            frameWidth: 32,
+            frameHeight: 20
+        })
+
+        this.load.spritesheet('P2Health', 'P2Health.png', {
+            frameWidth: 32,
+            frameHeight: 20
+        })
+
         this.load.spritesheet('stage','FightStage.png', {
             frameWidth: 1956, 
             frameHeight: 1436
@@ -27,8 +37,10 @@ class Load extends Phaser.Scene {
             frameHeight: 1420
         })
 
+        this.load.spritesheet('p1', 'Character_002.png', {
+            frameWidth: 48
+        })
 
-        //this.load.path = './assets/tilemaps/'
 
         this.load.path = './assets/fonts/'
         this.load.bitmapFont('reg', 'WhiteBone.png', 'WhiteBone.xml')
@@ -37,8 +49,12 @@ class Load extends Phaser.Scene {
         this.load.image('B', 'B.png')
 
 
-        //this.load.path = './assets/sounds/'
-        //this.load.audio('jump-sfx', 'jump-temp.wav')
+        this.load.path = './assets/Audio/'
+        this.load.audio('background', 'Background.mp3')
+        this.load.audio('FacePunch', 'FacePunch.mp3')
+        this.load.audio('sword', 'sword.mp3')
+        this.load.audio('click', 'click.wav')
+
     }
 
     create() {

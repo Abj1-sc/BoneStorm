@@ -83,6 +83,9 @@ class Tutorial extends Phaser.Scene {
             }
         })
 
+        // click sounc
+        this.click = this.sound.add('click')
+
         // prevent spamming
         this.space = 0
     }
@@ -92,6 +95,7 @@ class Tutorial extends Phaser.Scene {
 
         if (KEYS.START.isDown && this.space == 0) {
             this.space++
+            this.click.play()
             this.transitionTween.play(true)
         }    
     }
