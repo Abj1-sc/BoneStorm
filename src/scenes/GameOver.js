@@ -18,7 +18,7 @@ class GameOver extends Phaser.Scene {
 
         if (winner == 1) {
             message = this.add.bitmapText(game.config.width/2, game.config.height/2, 'title-font', 'P1 WINS!!!', 70).setOrigin(.5).setDepth(1).setAlpha(0)
-        } else {
+        } else if (winner == 2) {
             message = this.add.bitmapText(game.config.width/2, game.config.height/2, 'title-font', 'P2 WINS!!!', 70).setOrigin(.5).setDepth(1).setAlpha(0)
         }
 

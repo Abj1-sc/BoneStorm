@@ -112,7 +112,9 @@ class Play extends Phaser.Scene {
         this.p2Attack = false
 
         //collider
-        this.physics.add.collider(this.p1.body, this.p2.body)
+        this.physics.add.collider(this.p1.body, this.p2.body, () => {
+            
+        })
 
 
         // Fight Message
@@ -142,8 +144,8 @@ class Play extends Phaser.Scene {
         let P1Label = this.add.bitmapText(132, 150, 'title-font', 'P1', 30).setOrigin(.5).setDepth(1)
         let P2Label = this.add.bitmapText(game.config.width - 135, 150, 'title-font', 'P2', 30).setOrigin(.5).setDepth(1)
 
-        this.P1HealthCount = 10
-        this.P2HealthCount = 10
+        this.P1HealthCount = 0
+        this.P2HealthCount = 0
 
 
         // fade in for everything
@@ -158,12 +160,12 @@ class Play extends Phaser.Scene {
 
 
     update() {
-        if (this.P1HealthCount <= 0){
-            this.scene.start('sceneGameOver')
+        if (this.P1HealthCount > 9 ){
+            this.scene.start('sceneGameOver', 2)
         }
 
-        if (this.P2HealthCount <= 0){
-            this.scene.start('sceneGameOver')
+        if (this.P2HealthCount > 9){
+            this.scene.start('sceneGameOver', 1)
         }
         
         //this.p1.update()
@@ -181,9 +183,10 @@ class Play extends Phaser.Scene {
             p1Direction = 'right'
         }
 
-        if(this.KEYS.P1ATK.isDown && this.p1.x - this.p2.x  < 20) {
+        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P1ATK) && Math.abs(this.p2.body.x - this.p1.body.x) <  70) {
             p1Vector.x = 0
-            this.P2HealthCount -= 1
+            this.P2HealthCount += 1
+            this.P2Health.setFrame(this.P2HealthCount)
         }
 
 
@@ -209,9 +212,10 @@ class Play extends Phaser.Scene {
             p2Direction = 'right'
         }
 
-        if(this.KEYS.P2ATK.isDown && this.p1.x - this.p2.x  < 20) {
+        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P2ATK) && Math.abs(this.p2.body.x - this.p1.body.x) <  70) {
             p2Vector.x = 0
-            this.P1HealthCount -= 1
+            this.P1HealthCount += 1
+            this.P1Health.setFrame(this.P1HealthCount)
         }
 
 

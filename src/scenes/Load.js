@@ -41,6 +41,10 @@ class Load extends Phaser.Scene {
             frameWidth: 48
         })
 
+        this.load.spritesheet('Player', 'fighter1.png', {
+            frameWidth: 50
+        })
+
 
         this.load.path = './assets/fonts/'
         this.load.bitmapFont('reg', 'WhiteBone.png', 'WhiteBone.xml')
