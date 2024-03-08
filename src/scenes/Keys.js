@@ -11,15 +11,16 @@ class Keys extends Phaser.Scene {
     create() {
         const { KeyCodes } = Phaser.Input.Keyboard
         this.KEYS = this.input.keyboard.addKeys({
+            START: KeyCodes.SPACE,
             P1LEFT:   KeyCodes.A,
             P1RIGHT: KeyCodes.D,
             P1ATK:   KeyCodes.W,
-            P2LEFT:   KeyCodes.A,
-            P2RIGHT: KeyCodes.D,
-            P2ATK:   KeyCodes.W,
+            P2LEFT:   KeyCodes.LEFT,
+            P2RIGHT: KeyCodes.RIGHT,
+            P2ATK:   KeyCodes.UP,
         })
 
         // launch next scene so it will run concurrently with this one
-        this.scene.launch('sceneMenu')
+        this.scene.launch('scenePlay')
     }
 }
