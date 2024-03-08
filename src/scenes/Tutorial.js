@@ -56,8 +56,6 @@ class Tutorial extends Phaser.Scene {
 
         })
 
-
-
         let introTween = this.tweens.add({
             targets: [title, p1Label, W, A, S, D, p2Label, UP, DOWN, LEFT, RIGHT, p1Text, p2Text, start],
             alpha: {from: 0, to: 1},
@@ -69,8 +67,6 @@ class Tutorial extends Phaser.Scene {
         })
 
         
-
-
         this.transitionTween = this.tweens.add({
             targets: [W,A,S,D, p2Label, p1Label, p1Text, p2Text, UP, DOWN, LEFT, RIGHT, title, start],
             paused: true,

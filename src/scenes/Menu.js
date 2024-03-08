@@ -1,3 +1,9 @@
+//***************************************************
+// CREATED BY: AYUSH BANDOPADHYAY, ERIC GONZALEZ
+// ALL CODE DONE ON ONE COMPUTER, WE ARE ROOMMATES
+//*************************************************** 
+
+// Credits to assets
 // font: Google Fonts: Kelly Slab
 // Keyboard keycap assets by nartGraphic on Vecteezy.com
 

@@ -15,6 +15,7 @@ class Load extends Phaser.Scene {
         this.load.image('DOWN', 'DOWN.png')
         this.load.image('LEFT', 'LEFT.png')
         this.load.image('RIGHT', 'RIGHT.png')
+        this.load.image('stage', 'fightStage.png')
 
         //this.load.path = './assets/tilemaps/'
 
