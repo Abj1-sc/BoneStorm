@@ -29,8 +29,9 @@ class Keys extends Phaser.Scene {
             volume: .5
         })
 
-        music.play()
+        //music.play()
+
         // launch next scene so it will run concurrently with this one
-        this.scene.launch('scenePlay')
+        this.scene.launch('sceneMenu')
     }
 }

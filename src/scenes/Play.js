@@ -156,8 +156,11 @@ class Play extends Phaser.Scene {
             alpha: {from: 0, to: 1}
         })
 
-    }
+        // punch sound
+        this.punch = this.sound.add('Punch')
+        this.swish = this.sound.add('swish')
 
+    }
 
     update() {
         if (this.P1HealthCount > 9 ){
@@ -173,7 +176,6 @@ class Play extends Phaser.Scene {
         let p1Vector = new Phaser.Math.Vector2(0, 0)
         let p1Direction = 'down'
 
-
         //handle left and right
         if(this.KEYS.P1LEFT.isDown) {
             p1Vector.x = -1
@@ -183,12 +185,18 @@ class Play extends Phaser.Scene {
             p1Direction = 'right'
         }
 
-        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P1ATK) && Math.abs(this.p2.body.x - this.p1.body.x) <  70) {
+        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P1ATK)) {
+            if(Math.abs(this.p2.body.x - this.p1.body.x) <  70) {
             p1Vector.x = 0
+            this.punch.play()
             this.P2HealthCount += 1
             this.P2Health.setFrame(this.P2HealthCount)
+            this.p2.x += 30
+            } else {
+                p1Vector.x = 0
+                this.swish.play()
+            }
         }
-
 
         //set player speed and direction
         this.p1.setVelocity(this.PLAYER_VELOCITY * p1Vector.x, this.PLAYER_VELOCITY * p1Vector.y)
@@ -196,12 +204,10 @@ class Play extends Phaser.Scene {
         p1Vector.length() ? p1Movement = 'walk' : p1Movement = 'idle'
         this.p1.play(p1Movement + '-' + p1Direction, true)
 
-
         //this.p2.update()
         // do this every frame
         let p2Vector = new Phaser.Math.Vector2(0, 0)
         let p2Direction = 'down'
-
 
         //handle left and right
         if(this.KEYS.P2LEFT.isDown) {
@@ -212,12 +218,18 @@ class Play extends Phaser.Scene {
             p2Direction = 'right'
         }
 
-        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P2ATK) && Math.abs(this.p2.body.x - this.p1.body.x) <  70) {
+        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P2ATK)) {
+            if(Math.abs(this.p2.body.x - this.p1.body.x) <  70) {
             p2Vector.x = 0
+            this.punch.play()
             this.P1HealthCount += 1
             this.P1Health.setFrame(this.P1HealthCount)
-        }
-
+            this.p1.x -= 30
+            } else {
+                p2Vector.x = 0
+                this.swish.play()
+            }
+        } 
 
         //set player speed and direction
         this.p2.setVelocity(this.PLAYER_VELOCITY * p2Vector.x, this.PLAYER_VELOCITY * p2Vector.y)

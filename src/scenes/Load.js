@@ -4,7 +4,7 @@ class Load extends Phaser.Scene {
     }
 
     preload() {
-        this.load.path = './assets/Img/'
+        this.load.path = '../assets/Img/'
         this.load.image('screen' ,'ScreenOut.png')
         this.load.image('sword', 'sword.png')
         this.load.image('W', 'W.png')
@@ -41,23 +41,20 @@ class Load extends Phaser.Scene {
             frameWidth: 48
         })
 
-        this.load.spritesheet('Player', 'fighter1.png', {
-            frameWidth: 50
-        })
-
-
-        this.load.path = './assets/fonts/'
+        this.load.path = '../assets/fonts/'
         this.load.bitmapFont('reg', 'WhiteBone.png', 'WhiteBone.xml')
         this.load.bitmapFont('title-font', 'BoneFont.png', 'BoneFont.xml')
         this.load.image('M', 'M.png')
         this.load.image('B', 'B.png')
 
 
-        this.load.path = './assets/Audio/'
+        this.load.path = '../assets/Audio/'
         this.load.audio('background', 'Background.mp3')
         this.load.audio('FacePunch', 'FacePunch.mp3')
         this.load.audio('sword', 'sword.mp3')
         this.load.audio('click', 'click.wav')
+        this.load.audio('Punch', 'punch.mp3')
+        this.load.audio('swish', 'swish.mp3')
 
     }
 
