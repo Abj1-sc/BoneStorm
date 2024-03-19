@@ -31,10 +31,12 @@ class Tutorial extends Phaser.Scene {
         let RIGHT = this.add.sprite(game.config.width*4/5 - 15, game.config.height/2, 'RIGHT').setOrigin(.5).setScale(.5).setAlpha(0)
 
         // Instruction text
-        let  p1Text = this.add.bitmapText(game.config.width*3/10, game.config.height/2 + 160, 'reg', '[A] and [D] to move\n[W] to attack\n[S] to grab', 25, 1).setOrigin(.5).setAlpha(0)
-        let  p2Text = this.add.bitmapText(game.config.width*7/10, game.config.height/2 + 160, 'reg', '[LEFT] and [RIGHT] to move\n[UP] to attack\n[DOWN] to grab', 25, 1).setOrigin(.5).setAlpha(0)
+        let  p1Text = this.add.bitmapText(game.config.width*3/10, game.config.height/2 + 160, 'reg', '[A] and [D] to move\n[W] to attack\n[S] to block', 25, 1).setOrigin(.5).setAlpha(0)
+        let  p2Text = this.add.bitmapText(game.config.width*7/10, game.config.height/2 + 160, 'reg', '[LEFT] and [RIGHT] to move\n[UP] to attack\n[DOWN] to block', 25, 1).setOrigin(.5).setAlpha(0)
 
-        let start = this.add.bitmapText(game.config.width/2, game.config.height - 110, 'reg', '[SPACE] TO FIGHT', 20).setOrigin(.5).setAlpha(0)
+        let warning = this.add.bitmapText(game.config.width/2, game.config.height - 125, 'reg', 'You can not move while guarding or blocking. There is a punch cooldown.', 15).setOrigin(.5).setAlpha(0)
+
+        let start = this.add.bitmapText(game.config.width/2, game.config.height - 80, 'reg', '[SPACE] TO FIGHT', 20).setOrigin(.5).setAlpha(0)
 
 
         let startTween = this.tweens.chain({
@@ -57,7 +59,7 @@ class Tutorial extends Phaser.Scene {
         })
 
         let introTween = this.tweens.add({
-            targets: [title, p1Label, W, A, S, D, p2Label, UP, DOWN, LEFT, RIGHT, p1Text, p2Text, start],
+            targets: [title, p1Label, W, A, S, D, p2Label, UP, DOWN, LEFT, RIGHT, p1Text, p2Text, start, warning],
             alpha: {from: 0, to: 1},
             duration: 2000,
             ease: 'Sine.easeIn',
@@ -68,7 +70,7 @@ class Tutorial extends Phaser.Scene {
 
         
         this.transitionTween = this.tweens.add({
-            targets: [W,A,S,D, p2Label, p1Label, p1Text, p2Text, UP, DOWN, LEFT, RIGHT, title, start],
+            targets: [W,A,S,D, p2Label, p1Label, p1Text, p2Text, UP, DOWN, LEFT, RIGHT, title, start, warning],
             paused: true,
             alpha: {from: 1, to: 0},
             duration: 2000,
@@ -83,7 +85,7 @@ class Tutorial extends Phaser.Scene {
             }
         })
 
-        // click sounc
+        // click sound
         this.click = this.sound.add('click')
 
         // prevent spamming

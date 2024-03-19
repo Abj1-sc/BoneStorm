@@ -16,17 +16,17 @@ class Keys extends Phaser.Scene {
             P1LEFT:   KeyCodes.A,
             P1RIGHT: KeyCodes.D,
             P1ATK:   KeyCodes.W,
-            P1GRAB: KeyCodes.S,
+            P1BLOCK: KeyCodes.S,
             P2LEFT:   KeyCodes.LEFT,
             P2RIGHT: KeyCodes.RIGHT,
             P2ATK:   KeyCodes.UP,
-            P2GRAB: KeyCodes.DOWN
+            P2BLOCK: KeyCodes.DOWN
 
         })
 
         let music = this.sound.add("background", {
             loop: true,
-            volume: .5
+            volume: .3
         })
 
         music.play()

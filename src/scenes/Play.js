@@ -3,15 +3,10 @@ class Play extends Phaser.Scene {
         super('scenePlay')
     }
 
-    init() {
-        this.PLAYER_VELOCITY = 250
-    }
-
     create() {
 
         //get keybinds fron keys.js
         this.KEYS = this.scene.get('sceneKeys').KEYS
-
 
         // screen
         let screen = this.add.sprite(0, 0, 'screen').setOrigin(0).setDepth(2).setScale(1.5)
@@ -22,7 +17,6 @@ class Play extends Phaser.Scene {
 
 
         stage.anims.play('stageLava')
-
 
         // falling lava
         let lava = this.add.sprite(0, 0, 'lava', 0).setOrigin(0).setDepth(1).setScale(.51)
@@ -60,58 +54,36 @@ class Play extends Phaser.Scene {
         })
 
        
-        //define the animations
-        this.anims.create({
-            key: 'idle-down',
-            frameRate: 0,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('p1', {
-                start: 1,
-                end: 1
-            })
-        })
-
-
-        this.anims.create({
-            key: 'walk-left',
-            frameRate: 5,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('p1', {
-                start: 3,
-                end: 5
-            })
-        })
-
-
-        this.anims.create({
-            key: 'walk-right',
-            frameRate: 5,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('p1', {
-                start: 6,
-                end: 8
-            })
-        })
-
-
-        
         //add character sprites
-        //this.p1 = new P1(this, width / 4, height * 3 / 4, 'p1', 1)
-        this.p1 = this.physics.add.sprite(width/4, height * 3 / 4, 'p1', 1).setScale(2)
-        this.p1.body.setCollideWorldBounds(true)
-        this.p1.body.setSize(32, 32).setOffset(8,16)
+        this.p1 = new P1(this, width * 3/ 8, height * 5.8/11, 'p1', 1).setScale(4)
+        this.p2 = new P2(this, width * 5/ 8, height * 5.8/11, 'p2', 1).setScale(4)
 
-        this.p1Attack = false
+        this.PLAYER_VELOCITY = 200  
 
+        //add character blocking ability variables
+        this.p1blocking = false
+        this.p1blockTime = 0
 
-        //this.p2 = new P1(this, width / 4, height * 3 / 4, 'p1', 1)
-        this.p2 = this.physics.add.sprite(width * 3 / 4, height * 3 / 4, 'p1', 1).setScale(2)
-        this.p2.body.setCollideWorldBounds(true)
-        this.p2.body.setSize(32, 32).setOffset(8,16)
+        this.p2blocking = false
+        this.p2blockTime = 0
 
-        this.p2Attack = false
+        //add punch counter so the players can't spam punches
+        this.p1PunchCount = 3
+        this.p2PunchCount = 3
 
-        //collider
+        //lock player movement when they punch
+        this.p1MoveLock = false
+        this.p2MoveLock = false
+
+        let timer = this.time.addEvent({
+            delay: 3000,
+            callback: this.addPunches,
+            callbackScope: this,
+            loop: true
+        })
+    
+
+        //collider so the characters don't move past each other
         this.physics.add.collider(this.p1.body, this.p2.body, () => {
             
         })
@@ -149,9 +121,8 @@ class Play extends Phaser.Scene {
 
 
         // fade in for everything
-
         let fadeIn = this.tweens.add({
-            targets: [stage, this.P1Health, this.P2Health, P1Label, P2Label],
+            targets: [stage, this.P1Health, this.P2Health, P1Label, P2Label, this.p1, this.p2],
             duration: 2000,
             alpha: {from: 0, to: 1}
         })
@@ -163,78 +134,152 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        if (this.P1HealthCount > 9 ){
+        //check if a player was defeated
+        if (this.p1.checkGameOver()){
             this.scene.start('sceneGameOver', 2)
         }
-
-        if (this.P2HealthCount > 9){
+        if (this.p2.checkGameOver()){
             this.scene.start('sceneGameOver', 1)
         }
-        
-        //this.p1.update()
-        // do this every frame
-        let p1Vector = new Phaser.Math.Vector2(0, 0)
-        let p1Direction = 'down'
 
-        //handle left and right
-        if(this.KEYS.P1LEFT.isDown) {
-            p1Vector.x = -1
-            p1Direction = 'left'
-        } else if(this.KEYS.P1RIGHT.isDown) {
-            p1Vector.x = 1
-            p1Direction = 'right'
+        //player 1 inputs
+        //set animation to idle and stop character movement at the beginning of each frame
+        let p1direction = 'down1'
+        let p1movement = 'idle'
+        this.p1.setVelocityX(0)
+
+        //move left and right
+        if(this.KEYS.P1LEFT.isDown && this.p1MoveLock == false) {
+            this.p1.setVelocityX(-1 * this.PLAYER_VELOCITY)
+            p1direction = 'left1'
+        } else if(this.KEYS.P1RIGHT.isDown && this.p1MoveLock == false) {
+            this.p1.setVelocityX(1 * this.PLAYER_VELOCITY)
+            p1direction = 'right1'
         }
 
-        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P1ATK)) {
-            if(Math.abs(this.p2.body.x - this.p1.body.x) <  70) {
-            p1Vector.x = 0
+        if (p1direction == 'left1' || p1direction == 'right1') {
+            p1movement = 'walk'
+        }
+        this.p1.play(p1movement + '-' + p1direction, true)
+
+        //block attacks if the key is pressed and blocking hasn't been held for more than 2 seconds straight
+        if (this.KEYS.P1BLOCK.isDown && this.p1blockTime < 120) {
+            this.p1blocking = true
+            this.p1blockTime += 1
+            this.p1.setVelocityX(0)
+            this.p1.anims.play('guard1')
+        }
+        //if block time exceeds 2 seconds, the player can no longer block
+        if (this.p1blockTime >= 120) {
+            this.p1blocking = false
+        }
+        //reset block time if they are not holding the key down
+        if (!this.KEYS.P1BLOCK.isDown) {
+            this.p1blockTime = 0
+            this.p1blocking = false
+        }
+
+        //handle player attacking
+        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P1ATK) && this.p1PunchCount > 0) {
+            this.p1PunchCount -= 1
+            this.p1.setFrame(5)
+            this.time.delayedCall(100, () => {
+                this.p1.anims.play('idle-down1')
+            })
+            if(Math.abs(this.p2.body.x - this.p1.body.x) <  370 && this.p2blocking == false) {
+            this.p1.setVelocityX(0)
             this.punch.play()
-            this.P2HealthCount += 1
-            this.P2Health.setFrame(this.P2HealthCount)
-            this.p2.x += 30
+            this.p2.subHealthCount()
+            this.P2Health.setFrame(this.p2.getHealthCount())
+            this.p2.x += 50
             } else {
-                p1Vector.x = 0
+                this.p1.setVelocityX(0)
                 this.swish.play()
             }
+            this.p1MoveLock = true
+            let unlockP1 = this.time.addEvent({
+                delay: 1000,
+                callback: this.p1Unlock,
+                callbackScope: this,
+                loop: false
+            })
         }
 
-        //set player speed and direction
-        this.p1.setVelocity(this.PLAYER_VELOCITY * p1Vector.x, this.PLAYER_VELOCITY * p1Vector.y)
-        let p1Movement
-        p1Vector.length() ? p1Movement = 'walk' : p1Movement = 'idle'
-        this.p1.play(p1Movement + '-' + p1Direction, true)
+        //player 2 inputs
+        //set animation to idle and stop character movement at the beginning of each frame
+        let p2direction = 'down2'
+        let p2movement = 'idle'
+        this.p2.setVelocityX(0)
 
-        //this.p2.update()
-        // do this every frame
-        let p2Vector = new Phaser.Math.Vector2(0, 0)
-        let p2Direction = 'down'
+        //move left and right
+        if(this.KEYS.P2LEFT.isDown && this.p2MoveLock == false) {
+            this.p2.setVelocityX(-1 * this.PLAYER_VELOCITY)
+            p2direction = 'left2'
+        } else if(this.KEYS.P2RIGHT.isDown && this.p2MoveLock == false) {
+            this.p2.setVelocityX(1 * this.PLAYER_VELOCITY)
+            p2direction = 'right2'
+        }
+        if (p2direction == 'left2' || p2direction == 'right2') {
+            p2movement = 'walk'
+        }
+        this.p2.play(p2movement + '-' + p2direction, true)
 
-        //handle left and right
-        if(this.KEYS.P2LEFT.isDown) {
-            p2Vector.x = -1
-            p2Direction = 'left'
-        } else if(this.KEYS.P2RIGHT.isDown) {
-            p2Vector.x = 1
-            p2Direction = 'right'
+        //block attacks if the key is pressed and blocking hasn't been held for more than 2 seconds straight
+        if (this.KEYS.P2BLOCK.isDown && this.p2blockTime < 120) {
+            this.p2blocking = true
+            this.p2blockTime += 1
+            this.p2.setVelocityX(0)
+            this.p2.play('guard2', true)
+        }
+        //if block time exceeds 2 seconds, the player can no longer block
+        if (this.p2blockTime >= 120) {
+            this.p2blocking = false
+        }
+        //reset block time if they are not holding the key down
+        if (!this.KEYS.P2BLOCK.isDown) {
+            this.p2blockTime = 0
+            this.p2blocking = false
         }
 
-        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P2ATK)) {
-            if(Math.abs(this.p2.body.x - this.p1.body.x) <  70) {
-            p2Vector.x = 0
+        //handle player attacking
+        if(Phaser.Input.Keyboard.JustDown(this.KEYS.P2ATK) && this.p2PunchCount > 0) {
+            this.p2PunchCount -= 1
+            this.p2.setFrame(4)
+            this.time.delayedCall(100, () => {
+                this.p2.anims.play('idle-down2')
+            })
+            if(Math.abs(this.p2.body.x - this.p1.body.x) < 370 && this.p1blocking == false) {
+            this.p2.setVelocityX(0)
             this.punch.play()
-            this.P1HealthCount += 1
-            this.P1Health.setFrame(this.P1HealthCount)
-            this.p1.x -= 30
+            this.p1.subHealthCount()
+            this.P1Health.setFrame(this.p1.getHealthCount())
+            this.p1.x -= 50
             } else {
-                p2Vector.x = 0
+                this.p2.setVelocityX(0) 
                 this.swish.play()
             }
-        } 
+            this.p2MoveLock = true
+            let unlockP2 = this.time.addEvent({
+                delay: 1000,
+                callback: this.p2Unlock,
+                callbackScope: this,
+                loop: false
+            })
+        }
+    }
 
-        //set player speed and direction
-        this.p2.setVelocity(this.PLAYER_VELOCITY * p2Vector.x, this.PLAYER_VELOCITY * p2Vector.y)
-        let p2Movement
-        p2Vector.length() ? p2Movement = 'walk' : p2Movement = 'idle'
-        this.p2.play(p2Movement + '-' + p2Direction, true)
+    // punch cooldown or stamina
+    addPunches() {
+        this.p1PunchCount += 3
+        this.p2PunchCount += 3
+    }
+
+    // movement lock for when punching or guarding
+    p1Unlock() {
+        this.p1MoveLock = false
+    }
+
+    p2Unlock() {
+        this.p2MoveLock = false
     }
 }

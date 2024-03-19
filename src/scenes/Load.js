@@ -37,8 +37,14 @@ class Load extends Phaser.Scene {
             frameHeight: 1420
         })
 
-        this.load.spritesheet('p1', 'Character_002.png', {
-            frameWidth: 48
+        this.load.spritesheet('p1', 'fighter1.png', {
+            frameWidth: 124,
+            frameHeight: 120
+        })
+
+        this.load.spritesheet('p2', 'fighter2.png', {
+            frameWidth: 124,
+            frameHeight: 120
         })
 
         this.load.path = './assets/Fonts/'
@@ -75,6 +81,108 @@ class Load extends Phaser.Scene {
             repeat: -1,
             repeatDelay: 3000,
             frames: this.anims.generateFrameNumbers('lava', { frames: [ 0, 1, 2, 0]} )
+        })
+
+        //player animations
+        this.anims.create({
+            key: 'idle-down1',
+            frameRate: 0,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p1', {
+                start: 0,
+                end: 0
+            })
+        })
+
+        this.anims.create({
+            key: 'walk-left1',
+            frameRate: 5,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p1', {
+                start: 1,
+                end: 2
+            })
+        })
+
+        this.anims.create({
+            key: 'walk-right1',
+            frameRate: 5,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p1', {
+                start: 2,
+                end: 1
+            })
+        })
+
+        this.anims.create({
+            key: 'punch1',
+            frameRate: 1,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p1', {
+                start: 4,
+                end: 4
+            })
+        })
+
+        this.anims.create({
+            key: 'guard1',
+            frameRate: 5,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p1', {
+                start: 3,
+                end: 3
+            })
+        })
+
+        //player animations
+        this.anims.create({
+            key: 'idle-down2',
+            frameRate: 0,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p2', {
+                start: 0,
+                end: 0
+            })
+        })
+
+        this.anims.create({
+            key: 'walk-left2',
+            frameRate: 5,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p2', {
+                start: 1,
+                end: 2
+            })
+        })
+
+        this.anims.create({
+            key: 'walk-right2',
+            frameRate: 5,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p2', {
+                start: 2,
+                end: 1
+            })
+        })
+
+        this.anims.create({
+            key: 'punch2',
+            frameRate: 1,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p2', {
+                start: 4,
+                end: 4
+            })
+        })
+
+        this.anims.create({
+            key: 'guard2',
+            frameRate: 5,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('p2', {
+                start: 3,
+                end: 3
+            })
         })
 
         this.scene.start('sceneKeys')
